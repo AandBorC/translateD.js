@@ -41,7 +41,7 @@
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
-        + '.word-nav li {padding-left:12px;width:62px;}'
+        + '.word-nav li {padding-left:12px;width:74px;}'
         + '.word-nav a {color:black;}'
         + '.redirection {color:#ffffffd9;border-radius:4px;padding:12px;background-color:#00000014;}'
         + '.word-details-pane-header {padding:1.8vh;border-top-left-radius:2px;border-top-right-radius:2px;background-color:' + COLOR + ';color:white;}'
