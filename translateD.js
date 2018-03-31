@@ -85,6 +85,14 @@
         + '.simple-definition a{display:inline-block;margin-top:10px;margin-right:2px;cursor:pointer;text-decoration:none;color:white;padding:4px 8px;border:1px solid #ffffff14;border-radius:4px;background-color:#ffffff24;transition:background-color 0.2s;}'
         + '.simple-definition a:hover{background-color:#ffffff63;}'
 
+        + '.word-details-header{padding:0px 12px;}'
+        + '.word-details-header p{}'
+        + '.word-details-header ul{display: flex;margin-bottom:10px;}'
+        + '.word-details-header ul li{display: flex;background-color:red;margin-right:10px;height:30px;border-radius:4px;padding:4px 8px;}'
+        + '.word-details-header ul li h2{margin-bottom:0px;}'
+        + '.word-details-header ul li div.pronounces{height:20px;}'
+
+
 
 
 
@@ -105,7 +113,7 @@
     window.document.body.addEventListener('mouseup', () => {
         let selectedText = window.getSelection().toString()
         if (selectedText !== '') {
-            
+
             foo(selectedText, en)
             //  foo(selectedText,cj)
             //  foo(selectedText,jc)
@@ -123,7 +131,7 @@
             method: "GET",
             url: url,
             onload: function (response) {
-                let result_1='', result_2='', result_3='';
+                let result_1 = '', result_2 = '', result_3 = '';
 
                 result_1 = response.responseText
                     .replace(/\r\n/g, '')
@@ -142,27 +150,37 @@
                     .replace(/<a\shref="\/w\//gm, '<a data-syn-word="')
                     .replace(/http:\/\//gm, 'https://')
                     .replace(/class="content"/g, 'class="translateD-content"')
-                
+
                 // 写入内容
-
-                let m = /<div class="word-details-pane-content".+?<\/footer>/
-                if (new RegExp(m,'gm').test(result_2)) {                  
+                let m = /<div class="word-details-pane-content".+?<\/footer>/gm
+                let result_cache = []
+                let wordDetailsPaneContent = function () {
                     result_2.match(m).forEach(e => {
-                     
-                         result_3 = result_2.replace(m, '<div class="word-details-pane-content-all">' + e + '</div>')
+                        result_cache.push(e)
+                        result_2 = result_2.replace(m, '<%-wordDetailsPaneContent-%>')
                     })
-                }else{
-                     result_3 = result_2
+
+                    result_cache.forEach(e => {
+                        result_2 = result_2.replace(/<%-wordDetailsPaneContent-%>/m, '<div class="word-details-pane-content-all">' + e + '</div>')
+                    })
+
+                    result_3 = result_2
+
                 }
-                
-                document.querySelector('#translateD').innerHTML = result_3.replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm,'')
-                
-                //console.log(res)
+                if (new RegExp(m, 'gm').test(result_2)) {
+                    wordDetailsPaneContent()
+                } else {
+                    result_3 = result_2
+                }
+
+                document.querySelector('#translateD').innerHTML = result_3.replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
 
 
 
 
-                // event 'wheel' can used in chrome&firefox
+
+
+                //0 event 'wheel' can used in chrome&firefox
                 let stopScoll = function (event) {
                     event.preventDefault()
                 }
@@ -177,7 +195,7 @@
 
                 // for content tag
                 let data_point = 1
-                // 1.tag switch
+                // 1tag switch
 
                 let wordNav = function () {
 
@@ -252,7 +270,7 @@
 
                 let wordDetail = function () {
                     // 2.content detail
-                    const wordDetailsId = document.querySelector('.word-details-pane-content')
+                    const wordDetailsId = document.querySelector('.word-details-pane-content-all')
                     const wordDetailsClass = document.querySelector('.word-details-pane-content')
 
                     let wordDetailHeight
@@ -260,8 +278,7 @@
                     const formHeight = parseInt(getComputedStyle(document.querySelector('#translateD'), null).height.replace(/px/, ''))
                     const headerHeight = parseInt(getComputedStyle(document.querySelector('.word-details-pane-header'), null).height.replace(/px/, ''))
                     const navHeight = parseInt(getComputedStyle(document.querySelector('.word-nav'), null).height.replace(/px/, ''))
-                    if(document.getElementsByClassName('.word-details-header')){
-                        // 
+                    if (document.querySelectorAll('.word-details-header').length !== 0) {
                         wordHeight = parseInt(getComputedStyle(document.querySelector('.word-details-header'), null).height.replace(/px/, ''))
                     }
                     let detailHeight
@@ -319,13 +336,13 @@
                         }
                     }
 
-                    if (document.getElementsByClassName('syn').length !== 0) {
+                    if (document.querySelectorAll('.syn').length !== 0) {
                         document.querySelector('.syn').addEventListener('click', event => {
                             aTag()
                         })
                     }
 
-                    if (document.getElementsByClassName('simple-definition').length !== 0) {
+                    if (document.querySelectorAll('.simple-definition').length !== 0) {
                         document.querySelector('.simple-definition').addEventListener('click', event => {
                             aTag()
                         })
