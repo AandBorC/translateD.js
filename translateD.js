@@ -37,7 +37,7 @@
         + '#translateD dl{margin:13px 0px;}'
         + '#translateD dd{ margin-left:6px;}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
-        + '#translateD > .translateD-content {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:1.8vh;border-radius:5px;border:1px solid #7575cc;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;}'
+        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:1.8vh;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
@@ -85,13 +85,15 @@
         + '.simple-definition a{display:inline-block;margin-top:10px;margin-right:2px;cursor:pointer;text-decoration:none;color:white;padding:4px 8px;border:1px solid #ffffff14;border-radius:4px;background-color:#ffffff24;transition:background-color 0.2s;}'
         + '.simple-definition a:hover{background-color:#ffffff63;}'
 
-        + '.word-details-header{}'
-        + '.word-details-header p{}'
+        + '.word-details-header{background-color:#5454c1;}'
+        + '.word-details-header p{margin-top:0px!important;display:none;}'
         + '.word-details-header p > span {}'
-        + '.word-details-header ul{}'
-        + '.word-details-header ul li{}'
-        + '.word-details-header ul li h2{}'
-        + '.word-details-header ul li div.pronounces{}'
+        + '.word-details-header ul{display:flex;}'
+        + '.word-details-header ul li{width:56px;display:inherit;justify-content:center;padding:6px 0px;}'
+        + '.word-details-header ul li:hover{background:yellow;transition:background-color 0.2s;}'
+        + '.word-details-header ul li h2{display:none;}'
+        + '.word-details-header ul li div.pronounces{font-weight:lighter;}'
+        + '.word-details-header span.word-header-triangle{display:block;width:56px;height:29px;background-color:'+COLOR+';margin-top:-29px;margin-left:0;}'
 
 
 
@@ -152,7 +154,6 @@
                     .replace(/http:\/\//gm, 'https://')
                     .replace(/class="content"/g, 'class="translateD-content"')
 
-                // 写入内容
                 let m = /<div class="word-details-pane-content".+?<\/footer>/gm
                 let result_cache = []
                 let wordDetailsPaneContent = function () {
@@ -160,22 +161,24 @@
                         result_cache.push(e)
                         result_2 = result_2.replace(m, '<%-wordDetailsPaneContent-%>')
                     })
-
                     result_cache.forEach(e => {
                         result_2 = result_2.replace(/<%-wordDetailsPaneContent-%>/m, '<div class="word-details-pane-content-all">' + e + '</div>')
                     })
-
-                    result_3 = result_2
-
+                   
                 }
+
                 if (new RegExp(m, 'gm').test(result_2)) {
                     wordDetailsPaneContent()
-                } else {
-                    result_3 = result_2
+                } 
+
+                let h = /<header class="word-details-header">.+?<\/header>/gm
+                if(h.test(result_2)){
+                    result_2 = result_2.replace(h,result_2.match(h)[0].replace(/\[|\]/gm,'').replace(/<\/header>/,'<span class="word-header-triangle"></span></header>'))
                 }
-
-                document.querySelector('#translateD').innerHTML = result_3.replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
-
+                
+                document.querySelector('#translateD').innerHTML = result_2
+                    .replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
+            
 
 
 
@@ -276,7 +279,7 @@
 
                     let wordDetailHeight
                     let wordHeight = 0;
-                    const formHeight = parseInt(getComputedStyle(document.querySelector('.translateD-content'), null).height.replace(/px/, ''))
+                    const formHeight = parseInt(getComputedStyle(document.querySelector('#translateD'), null).height.replace(/px/, ''))
                     const headerHeight = parseInt(getComputedStyle(document.querySelector('.word-details-pane-header'), null).height.replace(/px/, ''))
                     const navHeight = parseInt(getComputedStyle(document.querySelector('.word-nav'), null).height.replace(/px/, ''))
                     if (document.querySelectorAll('.word-details-header').length !== 0) {
