@@ -37,14 +37,14 @@
         + '#translateD dl{margin:13px 0px;}'
         + '#translateD dd{ margin-left:6px;}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
-        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:1.8vh;border-radius:4px;border:1px solid #7575cc;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;}'
+        + '#translateD > .translateD-content {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:1.8vh;border-radius:5px;border:1px solid #7575cc;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
         + '.word-nav li {padding-left:12px;width:62px;}'
         + '.word-nav a {color:black;}'
         + '.redirection {color:#ffffffd9;border-radius:4px;padding:12px;background-color:#00000014;}'
-        + '.word-details-pane-header {padding:1.8vh;border-top-left-radius:2px;border-top-right-radius:2px;background-color:' + COLOR + ';color:white;}'
+        + '.word-details-pane-header {padding:1.8vh;background-color:' + COLOR + ';color:white;}'
         + '#word-details-pane-content-all {overflow-y:hidden;}'
         + '.word-details-pane-content {font-size:12px;padding:12px;padding-top:6px;transition:margin-top 0.2s;}'
         + '.word-details-pane-content > div:nth-child(n+2) {display:none;}'
@@ -85,12 +85,13 @@
         + '.simple-definition a{display:inline-block;margin-top:10px;margin-right:2px;cursor:pointer;text-decoration:none;color:white;padding:4px 8px;border:1px solid #ffffff14;border-radius:4px;background-color:#ffffff24;transition:background-color 0.2s;}'
         + '.simple-definition a:hover{background-color:#ffffff63;}'
 
-        + '.word-details-header{padding:0px 12px;}'
+        + '.word-details-header{}'
         + '.word-details-header p{}'
-        + '.word-details-header ul{display: flex;margin-bottom:10px;}'
-        + '.word-details-header ul li{display: flex;background-color:red;margin-right:10px;height:30px;border-radius:4px;padding:4px 8px;}'
-        + '.word-details-header ul li h2{margin-bottom:0px;}'
-        + '.word-details-header ul li div.pronounces{height:20px;}'
+        + '.word-details-header p > span {}'
+        + '.word-details-header ul{}'
+        + '.word-details-header ul li{}'
+        + '.word-details-header ul li h2{}'
+        + '.word-details-header ul li div.pronounces{}'
 
 
 
@@ -275,7 +276,7 @@
 
                     let wordDetailHeight
                     let wordHeight = 0;
-                    const formHeight = parseInt(getComputedStyle(document.querySelector('#translateD'), null).height.replace(/px/, ''))
+                    const formHeight = parseInt(getComputedStyle(document.querySelector('.translateD-content'), null).height.replace(/px/, ''))
                     const headerHeight = parseInt(getComputedStyle(document.querySelector('.word-details-pane-header'), null).height.replace(/px/, ''))
                     const navHeight = parseInt(getComputedStyle(document.querySelector('.word-nav'), null).height.replace(/px/, ''))
                     if (document.querySelectorAll('.word-details-header').length !== 0) {
