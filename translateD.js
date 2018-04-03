@@ -93,7 +93,7 @@
         + '.word-details-header ul li:hover{background:yellow;transition:background-color 0.2s;}'
         + '.word-details-header ul li h2{display:none;}'
         + '.word-details-header ul li div.pronounces{font-weight:lighter;}'
-        + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:12px solid ' + COLOR + ';transition:margin-left 0.2s;}'
+        + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:12px solid ' + COLOR + ';transition:margin-left 0.4s;}'
 
 
 
