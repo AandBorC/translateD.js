@@ -93,7 +93,7 @@
         + '.word-details-header ul li:hover{background:yellow;transition:background-color 0.2s;}'
         + '.word-details-header ul li h2{display:none;}'
         + '.word-details-header ul li div.pronounces{font-weight:lighter;}'
-        + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:12px solid ' + COLOR + ';transition:margin-left 0.4s;}'
+        + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid ' + COLOR + ';transition:margin-left 0.4s;}'
 
 
 
@@ -272,6 +272,7 @@
 
                 wordNav()
 
+                // 内容滚动
                 let wordDetail = function () {
                     // 2.content detail
                     const wordDetailsId = document.querySelector('.word-details-pane-content-all')
@@ -354,18 +355,28 @@
 
 
                 let multiPronunciation = function () {
-                    if(document.querySelectorAll('.word-details-header').length!==0){
+                    if (document.querySelectorAll('.word-details-header').length !== 0) {
                         let li = document.querySelectorAll('.word-details-tab')
                         let span = document.querySelector('.word-header-triangle')
-                        let liWidth = WIDTH / document.querySelectorAll('.word-details-tab').length 
-                        span.style.marginLeft = ( liWidth / 2 - 12 ) + 'px' // 24 is span width
-                        li.forEach(e=>{
-                            e.style.width = liWidth + 'px'
-                        })
-                        document.querySelector('.word-details-header > ul').addEventListener('mouseenter', event => {
-                            console.log(event.target.childNodes)
-                        })
-                    }                
+                        let liWidth = WIDTH / document.querySelectorAll('.word-details-tab').length
+                        // 3 is span width/2
+                        span.style.marginLeft = (liWidth / 2 - 3) + 'px'
+                        for(let i=0;i<li.length;i++){
+                            li[i].style.width = liWidth + 'px'
+                            li[i].setAttribute('data-active',i)
+                            li[i].addEventListener('mouseenter',headerDone,false)
+                        }
+
+
+                        let contentAll = document.querySelectorAll('.word-details-pane')
+
+                        let headerDone = function () {
+                           if(event.target.tagName == 'LI'){
+                            span.style.marginLeft = (liWidth / 2 - 3) + liWidth*event.target.getAttribute('data-active') + 'px'
+
+                           }  
+                        }
+                    }
                 }
                 multiPronunciation()
             }
