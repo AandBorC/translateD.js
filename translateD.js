@@ -40,7 +40,7 @@
         + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:1.8vh;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
-        + '.word-nav {position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
+        + '.word-nav {margin-top:0;position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
         + '.word-nav li {padding-left:12px;width:62px;}'
         + '.word-nav a {color:black;}'
         + '.redirection {color:#ffffffd9;border-radius:4px;padding:12px;background-color:#00000014;}'
@@ -89,11 +89,11 @@
         + '.word-details-header p{margin-top:0px!important;display:none;}'
         + '.word-details-header p > span {}'
         + '.word-details-header ul{display:flex;}'
-        + '.word-details-header ul li{width:56px;display:inherit;justify-content:center;padding:6px 0px;}'
+        + '.word-details-header ul li{width:0px;display:inherit;justify-content:center;padding:6px 0px 8px 0px;transition:width 0.2s;}'
         + '.word-details-header ul li:hover{background:yellow;transition:background-color 0.2s;}'
         + '.word-details-header ul li h2{display:none;}'
         + '.word-details-header ul li div.pronounces{font-weight:lighter;}'
-        + '.word-details-header span.word-header-triangle{display:block;width:56px;height:29px;background-color:'+COLOR+';margin-top:-29px;margin-left:0;}'
+        + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:12px solid ' + COLOR + ';transition:margin-left 0.2s;}'
 
 
 
@@ -164,21 +164,21 @@
                     result_cache.forEach(e => {
                         result_2 = result_2.replace(/<%-wordDetailsPaneContent-%>/m, '<div class="word-details-pane-content-all">' + e + '</div>')
                     })
-                   
+
                 }
 
                 if (new RegExp(m, 'gm').test(result_2)) {
                     wordDetailsPaneContent()
-                } 
+                }
 
                 let h = /<header class="word-details-header">.+?<\/header>/gm
-                if(h.test(result_2)){
-                    result_2 = result_2.replace(h,result_2.match(h)[0].replace(/\[|\]/gm,'').replace(/<\/header>/,'<span class="word-header-triangle"></span></header>'))
+                if (h.test(result_2)) {
+                    result_2 = result_2.replace(h, result_2.match(h)[0].replace(/\[|\]/gm, '').replace(/<\/header>/, '<span class="word-header-triangle"></span></header>'))
                 }
-                
+
                 document.querySelector('#translateD').innerHTML = result_2
                     .replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
-            
+
 
 
 
@@ -326,12 +326,12 @@
                             }
                         }
                     }
-
                 }
                 wordDetail()
 
+
+                // 同反义词跳转
                 let wordSyn = function () {
-                    // 同反义词跳转
                     let aTag = function () {
                         if (event.target.tagName == 'A') {
                             foo(event.target.getAttribute('data-syn-word'), en)
@@ -339,21 +339,35 @@
                             foo(event.target.childNodes[1].getAttribute('data-syn-word'), en)
                         }
                     }
-
                     if (document.querySelectorAll('.syn').length !== 0) {
                         document.querySelector('.syn').addEventListener('click', event => {
                             aTag()
                         })
                     }
-
                     if (document.querySelectorAll('.simple-definition').length !== 0) {
                         document.querySelector('.simple-definition').addEventListener('click', event => {
                             aTag()
                         })
                     }
                 }
-
                 wordSyn()
+
+
+                let multiPronunciation = function () {
+                    if(document.querySelectorAll('.word-details-header').length!==0){
+                        let li = document.querySelectorAll('.word-details-tab')
+                        let span = document.querySelector('.word-header-triangle')
+                        let liWidth = WIDTH / document.querySelectorAll('.word-details-tab').length 
+                        span.style.marginLeft = ( liWidth / 2 - 12 ) + 'px' // 24 is span width
+                        li.forEach(e=>{
+                            e.style.width = liWidth + 'px'
+                        })
+                        document.querySelector('.word-details-header > ul').addEventListener('mouseenter', event => {
+                            console.log(event.target.childNodes)
+                        })
+                    }                
+                }
+                multiPronunciation()
             }
         })
     }
