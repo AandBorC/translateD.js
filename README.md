@@ -1,0 +1,3 @@
+# translateD.js
+基于沪江翻译的日中英划词脚本
+使用GM_xmlhttpRequest跨域请求沪江的翻译页面
