@@ -345,9 +345,12 @@
                             aTag()
                         })
                     }
-                    if (document.querySelectorAll('.simple-definition').length !== 0) {
-                        document.querySelector('.simple-definition').addEventListener('click', event => {
-                            aTag()
+                    let simple_definition = document.querySelectorAll('.simple-definition')
+                    if (simple_definition.length !== 0) {
+                        simple_definition.forEach(e=>{
+                            e.addEventListener('click', event => {
+                                aTag()
+                            })
                         })
                     }
                 }
@@ -361,21 +364,27 @@
                         let liWidth = WIDTH / document.querySelectorAll('.word-details-tab').length
                         // 3 is span width/2
                         span.style.marginLeft = (liWidth / 2 - 3) + 'px'
+
+                        let contentAll = document.querySelectorAll('.word-details-pane')
+                        let data_active 
+                        let headerDone = function () {        
+                            if(event.target.tagName == 'LI'){
+                            data_active = event.target.getAttribute('data-active')
+                             span.style.marginLeft = (liWidth / 2 - 3) + liWidth*data_active + 'px'
+                             console.log('done')
+                             contentAll.forEach(e=>{
+                                 e.style.display = 'none'
+                             })
+                             contentAll[data_active].style.display = 'block'
+
+                            }  
+                         }
+
                         for(let i=0;i<li.length;i++){
                             li[i].style.width = liWidth + 'px'
                             li[i].setAttribute('data-active',i)
                             li[i].addEventListener('mouseenter',headerDone,false)
-                        }
-
-
-                        let contentAll = document.querySelectorAll('.word-details-pane')
-
-                        let headerDone = function () {
-                           if(event.target.tagName == 'LI'){
-                            span.style.marginLeft = (liWidth / 2 - 3) + liWidth*event.target.getAttribute('data-active') + 'px'
-
-                           }  
-                        }
+                        }        
                     }
                 }
                 multiPronunciation()
