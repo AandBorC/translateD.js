@@ -100,7 +100,7 @@
 
 
 
-    document.body.onload = () => {
+    window.onload = () => {
         let style = document.createElement("style")
         let div = document.createElement("div")
         style.id = 'translateDCSS'
