@@ -125,6 +125,21 @@
     }, false)
 
 
+    /**
+     * 返回height的int数值
+     * @param {*} CSSSelector
+     * @param type 'object'
+     */
+    function getElementHeight(CSSSelector, type) {
+        switch (type) {
+            case 'object':
+                return parseInt(getComputedStyle(CSSSelector, null).height.replace(/px/, ''))
+                break;
+            default:
+                return parseInt(getComputedStyle(document.querySelector(CSSSelector), null).height.replace(/px/, ''))
+                break;
+        }
+    }
 
 
     // DOM 操作
@@ -178,6 +193,7 @@
 
                 document.querySelector('#translateD').innerHTML = result_2
                     .replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
+                    .replace(/<section class="word-details-content"/gm, '<section class="word-details-content" data-active-pane=0')
 
 
 
@@ -185,14 +201,14 @@
 
 
                 //0 event 'wheel' can used in chrome&firefox
-                let stopScoll = function (event) {
+                let stopScroll = function (event) {
                     event.preventDefault()
                 }
                 document.querySelector('#translateD').addEventListener('mouseenter', e => {
-                    document.querySelector('html').addEventListener('wheel', stopScoll, false)
+                    document.querySelector('html').addEventListener('wheel', stopScroll, false)
 
                     document.querySelector('#translateD').addEventListener('mouseleave', e => {
-                        document.querySelector('html').removeEventListener('wheel', stopScoll, false)
+                        document.querySelector('html').removeEventListener('wheel', stopScroll, false)
                     })
                 })
 
@@ -232,7 +248,7 @@
 
                         const navlength = parseInt(WIDTH / 74)
 
-                        let navScoll = function () {
+                        let navScroll = function () {
                             navPoint.setAttribute('data-point', data_point)
                             if (data_point <= navlength) {
                                 navPoint.style.marginLeft = (data_point * 74) - 64 + 'px'
@@ -249,13 +265,15 @@
 
                         if (type == 'up' && data_point > 1) {
                             data_point--
-                            navScoll()
+                            navScroll()
                             wordDetilShow()
+
                         }
                         else if (type == 'down' && data_point < navLiNum) {
                             data_point++
-                            navScoll()
+                            navScroll()
                             wordDetilShow()
+
                         }
                     }
 
@@ -269,63 +287,66 @@
                         document.querySelector('#word-nav').removeEventListener('wheel', watchWheel, false)
                     })
                 }
-
                 wordNav()
 
                 // 内容滚动
                 let wordDetail = function () {
                     // 2.content detail
-                    const wordDetailsId = document.querySelector('.word-details-pane-content-all')
-                    const wordDetailsClass = document.querySelector('.word-details-pane-content')
+                    const wordPaneAll = document.querySelectorAll('.word-details-pane-content-all')
+                    const wordPaneContent = document.querySelectorAll('.word-details-pane-content')
+                    const wordDetailsPaneHeaderAll = document.querySelectorAll('.word-details-pane-header')
+                    const wordNavAll = document.querySelectorAll('.word-nav')
+                    const wordDetailsPaneContentAll = document.querySelectorAll('.word-details-pane-content')
 
-                    let wordDetailHeight
-                    let wordHeight = 0;
-                    const formHeight = parseInt(getComputedStyle(document.querySelector('#translateD'), null).height.replace(/px/, ''))
-                    const headerHeight = parseInt(getComputedStyle(document.querySelector('.word-details-pane-header'), null).height.replace(/px/, ''))
-                    const navHeight = parseInt(getComputedStyle(document.querySelector('.word-nav'), null).height.replace(/px/, ''))
-                    if (document.querySelectorAll('.word-details-header').length !== 0) {
-                        wordHeight = parseInt(getComputedStyle(document.querySelector('.word-details-header'), null).height.replace(/px/, ''))
+                
+                    let translateDHeight = getElementHeight('#translateD')
+                    let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeight, data_active_pane;
+                    wordNavHeight = 0;// defult
+
+                    let scrollContent = function () {
+                        // 1 get wordNavHeight
+                        data_active_pane = document.querySelector('.word-details-content').getAttribute('data-active-pane')
+
+                        if (document.querySelectorAll('.word-details-tab').length !== 0) {
+                            wordNavHeight = getElementHeight('.word-details-tab')
+                        }
+
+                        // 2
+                        headerHeight = getElementHeight(wordDetailsPaneHeaderAll[data_active_pane], 'object')
+                        wordNavHeight = getElementHeight(wordNavAll[data_active_pane], 'object')
+                        wordDetailsPaneContentHeight = getElementHeight(wordDetailsPaneContentAll[data_active_pane], 'object')
+
+                        contentHeight = translateDHeight - headerHeight - wordNavHeight - wordDetailsPaneContentHeight
+
+                        const scrollDistance = 120
+                        let wordDetailsPaneContentMarginTop
+                        if (contentHeight < 0) {
+                            wordDetailsPaneContentMarginTop = parseInt(getComputedStyle( wordDetailsPaneContentAll[data_active_pane],null).marginTop.replace(/px/,''))
+                            if (event.deltaY < 0) {
+                                wordDetailsPaneContentMarginTop + scrollDistance < 36 ?
+                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = wordDetailsPaneContentMarginTop + scrollDistance + 'px'
+                                    :
+                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = '36px'
+                                
+                            }
+                            else if (event.deltaY > 0){
+                                 wordDetailsPaneContentMarginTop - scrollDistance > contentHeight ?
+                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = wordDetailsPaneContentMarginTop - scrollDistance + 'px'
+                                    :
+                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = contentHeight + 'px'
+                                
+                            }
+                        }
                     }
-                    let detailHeight
-
-                    const scollDistance = 120
 
 
-                    // 
-                    wordDetailsId.addEventListener('mouseenter', e => {
-                        wordDetailHeight = parseInt(getComputedStyle(wordDetailsClass, null).height.replace(/px/, ''))
-                        wordDetailsClass.addEventListener('wheel', wordDetailScoll, false)
-                    })
-                    wordDetailsId.addEventListener('mouseleave', e => {
-                        wordDetailHeight = parseInt(getComputedStyle(wordDetailsClass, null).height.replace(/px/, ''))
-                        wordDetailsClass.removeEventListener('wheel', wordDetailScoll, false)
-                    })
-
-
-                    // 
-                    let wordDetailScoll = function () {
-                        let wordDetailsClassMarginTop = parseInt(getComputedStyle(wordDetailsClass, null).marginTop.replace(/px/, ''))
-
-                        if (event.deltaY < 0) {
-                            if (wordDetailsClassMarginTop + scollDistance > 36) {
-                                wordDetailsClass.style.marginTop = '36px'
-                            }
-                            else {
-                                wordDetailsClass.style.marginTop = wordDetailsClassMarginTop + scollDistance + 'px'
-                            }
-                        }
-                        // 内容高度 - div 高度
-                        else if (event.deltaY > 0) {
-                            detailHeight = formHeight - headerHeight - navHeight - wordHeight
-
-                            if (wordDetailHeight > detailHeight) {
-                                if (-(wordDetailHeight - detailHeight) > wordDetailsClassMarginTop - 120) {
-                                    wordDetailsClass.style.marginTop = -(wordDetailHeight - detailHeight) + 'px'
-                                } else {
-                                    wordDetailsClass.style.marginTop = wordDetailsClassMarginTop - 120 + 'px'
-                                }
-                            }
-                        }
+                    for (let i = 0; i < wordPaneAll.length; i++) {
+                        wordPaneAll[i].addEventListener('mouseenter', event => {
+                            wordPaneAll[i].addEventListener('wheel', scrollContent, false)
+                        })
+                        wordPaneAll[i].addEventListener('mouseleave', event => {
+                            wordPaneAll[i].removeEventListener('wheel', scrollContent, false)
+                        })
                     }
                 }
                 wordDetail()
@@ -347,7 +368,7 @@
                     }
                     let simple_definition = document.querySelectorAll('.simple-definition')
                     if (simple_definition.length !== 0) {
-                        simple_definition.forEach(e=>{
+                        simple_definition.forEach(e => {
                             e.addEventListener('click', event => {
                                 aTag()
                             })
@@ -357,6 +378,7 @@
                 wordSyn()
 
 
+                // 多个读音选择
                 let multiPronunciation = function () {
                     if (document.querySelectorAll('.word-details-header').length !== 0) {
                         let li = document.querySelectorAll('.word-details-tab')
@@ -366,25 +388,25 @@
                         span.style.marginLeft = (liWidth / 2 - 3) + 'px'
 
                         let contentAll = document.querySelectorAll('.word-details-pane')
-                        let data_active 
-                        let headerDone = function () {        
-                            if(event.target.tagName == 'LI'){
-                            data_active = event.target.getAttribute('data-active')
-                             span.style.marginLeft = (liWidth / 2 - 3) + liWidth*data_active + 'px'
-                             console.log('done')
-                             contentAll.forEach(e=>{
-                                 e.style.display = 'none'
-                             })
-                             contentAll[data_active].style.display = 'block'
+                        let data_active
+                        let headerDone = function () {
+                            if (event.target.tagName == 'LI') {
+                                data_active = event.target.getAttribute('data-active')
+                                span.style.marginLeft = (liWidth / 2 - 3) + liWidth * data_active + 'px'
+                                console.log('done')
+                                contentAll.forEach(e => {
+                                    e.style.display = 'none'
+                                })
+                                contentAll[data_active].style.display = 'block'
+                                document.querySelector('.word-details-content').setAttribute('data-active-pane', data_active)
+                            }
+                        }
 
-                            }  
-                         }
-
-                        for(let i=0;i<li.length;i++){
+                        for (let i = 0; i < li.length; i++) {
                             li[i].style.width = liWidth + 'px'
-                            li[i].setAttribute('data-active',i)
-                            li[i].addEventListener('mouseenter',headerDone,false)
-                        }        
+                            li[i].setAttribute('data-active', i)
+                            li[i].addEventListener('mouseenter', headerDone, false)
+                        }
                     }
                 }
                 multiPronunciation()
