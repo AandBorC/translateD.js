@@ -19,7 +19,7 @@
     let jc = 'https://dict.hjenglish.com/jp/jc/'
 
     // px
-    let WIDTH = '280'
+    let WIDTH = 280
     let COLOR = '#7373f3'
 
     let translateDCSSContent = ''
@@ -37,7 +37,7 @@
         + '#translateD dl{margin:13px 0px;}'
         + '#translateD dd{ margin-left:6px;}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
-        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:1.8vh;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;}'
+        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;transition:right 0.4s;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {margin-top:0;position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
@@ -90,9 +90,9 @@
         + '.word-details-header p > span {}'
         + '.word-details-header ul{display:flex;}'
         + '.word-details-header ul li{width:0px;display:inherit;justify-content:center;padding:6px 0px 8px 0px;transition:width 0.2s;}'
-        + '.word-details-header ul li:hover{background:yellow;transition:background-color 0.2s;}'
         + '.word-details-header ul li h2{display:none;}'
-        + '.word-details-header ul li div.pronounces{font-weight:lighter;}'
+        + '.word-details-header ul li div.pronounces{font-weight:lighter;color: #ffffff87}'
+        + '.word-details-header ul li:nth-child(1) div.pronounces{color: white}'
         + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid ' + COLOR + ';transition:margin-left 0.4s;}'
 
 
@@ -120,7 +120,11 @@
             foo(selectedText, en)
             //  foo(selectedText,cj)
             //  foo(selectedText,jc)
+
+        } else {
+            document.querySelector('#translateD').style.right = ''
         }
+
         console.log(selectedText)
     }, false)
 
@@ -215,8 +219,7 @@
 
                 // for content tag
                 let data_point = 1
-                // 1tag switch
-
+                // 1 tag switch
                 let wordNav = function () {
 
                     let watchWheel = function () {
@@ -289,7 +292,7 @@
                 }
                 wordNav()
 
-                // 内容滚动
+                // 2 内容滚动
                 let wordDetail = function () {
                     // 2.content detail
                     const wordPaneAll = document.querySelectorAll('.word-details-pane-content-all')
@@ -298,9 +301,9 @@
                     const wordNavAll = document.querySelectorAll('.word-nav')
                     const wordDetailsPaneContentAll = document.querySelectorAll('.word-details-pane-content')
 
-                
+
                     let translateDHeight = getElementHeight('#translateD')
-                    let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeight, data_active_pane;
+                    let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeightMarginTop, data_active_pane;
                     wordNavHeight = 0;// defult
 
                     let scrollContent = function () {
@@ -316,25 +319,25 @@
                         wordNavHeight = getElementHeight(wordNavAll[data_active_pane], 'object')
                         wordDetailsPaneContentHeight = getElementHeight(wordDetailsPaneContentAll[data_active_pane], 'object')
 
-                        contentHeight = translateDHeight - headerHeight - wordNavHeight - wordDetailsPaneContentHeight
+                        contentHeightMarginTop = translateDHeight - headerHeight - wordNavHeight - wordDetailsPaneContentHeight
 
                         const scrollDistance = 120
                         let wordDetailsPaneContentMarginTop
-                        if (contentHeight < 0) {
-                            wordDetailsPaneContentMarginTop = parseInt(getComputedStyle( wordDetailsPaneContentAll[data_active_pane],null).marginTop.replace(/px/,''))
+                        if (contentHeightMarginTop < 0) {
+                            wordDetailsPaneContentMarginTop = parseInt(getComputedStyle(wordDetailsPaneContentAll[data_active_pane], null).marginTop.replace(/px/, ''))
                             if (event.deltaY < 0) {
                                 wordDetailsPaneContentMarginTop + scrollDistance < 36 ?
                                     wordDetailsPaneContentAll[data_active_pane].style.marginTop = wordDetailsPaneContentMarginTop + scrollDistance + 'px'
                                     :
                                     wordDetailsPaneContentAll[data_active_pane].style.marginTop = '36px'
-                                
+
                             }
-                            else if (event.deltaY > 0){
-                                 wordDetailsPaneContentMarginTop - scrollDistance > contentHeight ?
+                            else if (event.deltaY > 0) {
+                                wordDetailsPaneContentMarginTop - scrollDistance > contentHeightMarginTop ?
                                     wordDetailsPaneContentAll[data_active_pane].style.marginTop = wordDetailsPaneContentMarginTop - scrollDistance + 'px'
                                     :
-                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = contentHeight + 'px'
-                                
+                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = contentHeightMarginTop + 'px'
+
                             }
                         }
                     }
@@ -352,7 +355,7 @@
                 wordDetail()
 
 
-                // 同反义词跳转
+                // 3 同反义词跳转
                 let wordSyn = function () {
                     let aTag = function () {
                         if (event.target.tagName == 'A') {
@@ -378,7 +381,7 @@
                 wordSyn()
 
 
-                // 多个读音选择
+                // 4 多个读音选择
                 let multiPronunciation = function () {
                     if (document.querySelectorAll('.word-details-header').length !== 0) {
                         let li = document.querySelectorAll('.word-details-tab')
@@ -393,11 +396,14 @@
                             if (event.target.tagName == 'LI') {
                                 data_active = event.target.getAttribute('data-active')
                                 span.style.marginLeft = (liWidth / 2 - 3) + liWidth * data_active + 'px'
-                                console.log('done')
                                 contentAll.forEach(e => {
                                     e.style.display = 'none'
                                 })
                                 contentAll[data_active].style.display = 'block'
+                                document.querySelectorAll('.pronounces').forEach(e => {
+                                    e.style.color = '#ffffff87'
+                                })
+                                event.target.childNodes[3].style.color = 'white'
                                 document.querySelector('.word-details-content').setAttribute('data-active-pane', data_active)
                             }
                         }
@@ -410,6 +416,9 @@
                     }
                 }
                 multiPronunciation()
+
+                // 5
+                document.querySelector('#translateD').style.right = '1.8vh'
             }
         })
     }
