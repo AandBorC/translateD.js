@@ -95,9 +95,9 @@
         + '.word-details-header ul li:nth-child(1) div.pronounces{color: white}'
         + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid ' + COLOR + ';transition:margin-left 0.4s;}'
 
-        + '.word-notfound {background-color:' + COLOR + ';color:white;display: flex;}'
-        + '.word-notfound span{font-size: 16px;}'
-        + '.word-notfound-inner {height:10vh;display:inherit;align-items: center;}'
+        + '.word-notfound-inner {background-color:' + COLOR + ';color:white;display: flex;height:10vh;align-items: center;}'
+        + '.word-notfound-inner span{font-size: 16px;}'
+        
 
 
 
@@ -221,7 +221,7 @@
                 $('#translateD').innerHTML = result_2
                     .replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
                     .replace(/<section class="word-details-content"/gm, '<section class="word-details-content" data-active-pane=0')
-                    .replace(/<div class="word-notfound-inner">.+?<\/div>/gm, '<div class="word-notfound-inner">' + iconSVG + '<span>没有找到你查的单词结果</span></div>')
+                    .replace(/<div class="word-notfound-inner">.+?<\/div>|<div class="word-suggestions">.+?<\/div>/gm, '<div class="word-notfound-inner">' + iconSVG + '<span>没有找到你查的单词结果</span></div>')
 
 
 
