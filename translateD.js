@@ -173,6 +173,7 @@
                     .replace(/http:\/\//gm, 'https://')
                     .replace(/class="content"/g, 'class="translateD-content"')
 
+                // 多音字
                 let m = /<div class="word-details-pane-content".+?<\/footer>/gm
                 let result_cache = []
                 let wordDetailsPaneContent = function () {
@@ -217,9 +218,9 @@
                 })
 
 
+                // 1 tag switch
                 // for content tag
                 let data_point = 1
-                // 1 tag switch
                 let wordNav = function () {
 
                     let watchWheel = function () {
@@ -282,7 +283,7 @@
 
 
                     document.querySelector('#word-nav').addEventListener('mouseenter', e => {
-                        // // add Listener
+                        // add Listener
                         document.querySelector('#word-nav').addEventListener('wheel', watchWheel, false)
                     })
                     document.querySelector('#word-nav').addEventListener('mouseleave', e => {
@@ -290,7 +291,7 @@
                         document.querySelector('#word-nav').removeEventListener('wheel', watchWheel, false)
                     })
                 }
-                wordNav()
+                if(document.querySelectorAll('.word-nav').length !== 0){wordNav()}
 
                 // 2 内容滚动
                 let wordDetail = function () {
