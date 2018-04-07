@@ -37,7 +37,7 @@
         + '#translateD dl{margin:13px 0px;}'
         + '#translateD dd{ margin-left:6px;}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
-        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;transition:right 0.4s;}'
+        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.95;box-shadow:0px 0px 30px #00000047;transition:right 0.32s,opacity 0.3s;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {margin-top:0;position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
@@ -95,8 +95,42 @@
         + '.word-details-header ul li:nth-child(1) div.pronounces{color: white}'
         + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid ' + COLOR + ';transition:margin-left 0.4s;}'
 
+        + '.word-notfound {background-color:' + COLOR + ';color:white;display: flex;}'
+        + '.word-notfound span{font-size: 16px;}'
+        + '.word-notfound-inner {height:10vh;display:inherit;align-items: center;}'
 
 
+
+    /**
+    * 返回height的int数值
+    * @param {*} CSSSelector
+    * @param type 'object'
+    */
+    function getElementHeight(CSSSelector, type) {
+        switch (type) {
+            case 'object':
+                return parseInt(getComputedStyle(CSSSelector, null).height.replace(/px/, ''))
+                break;
+            default:
+                return parseInt(getComputedStyle($(CSSSelector), null).height.replace(/px/, ''))
+                break;
+        }
+    }
+
+    /**
+     * document.querySelector
+     * @param {String} CSSSelector 
+     */
+    function $(CSSSelector) {
+        return document.querySelector(CSSSelector)
+    }
+    /**
+     * document.querySelectorAll
+     * @param {String} CSSSelector 
+     */
+    function $All(CSSSelector) {
+        return document.querySelectorAll(CSSSelector)
+    }
 
 
 
@@ -105,7 +139,7 @@
         let div = document.createElement("div")
         style.id = 'translateDCSS'
         div.id = 'translateD'
-        document.querySelector('head').appendChild(style)
+        $('head').appendChild(style)
         document.body.appendChild(div)
 
         style.innerHTML += translateDCSSContent
@@ -122,28 +156,13 @@
             //  foo(selectedText,jc)
 
         } else {
-            document.querySelector('#translateD').style.right = ''
+            $('#translateD').style.right = ''
         }
 
         console.log(selectedText)
     }, false)
 
 
-    /**
-     * 返回height的int数值
-     * @param {*} CSSSelector
-     * @param type 'object'
-     */
-    function getElementHeight(CSSSelector, type) {
-        switch (type) {
-            case 'object':
-                return parseInt(getComputedStyle(CSSSelector, null).height.replace(/px/, ''))
-                break;
-            default:
-                return parseInt(getComputedStyle(document.querySelector(CSSSelector), null).height.replace(/px/, ''))
-                break;
-        }
-    }
 
 
     // DOM 操作
@@ -196,12 +215,13 @@
                     result_2 = result_2.replace(h, result_2.match(h)[0].replace(/\[|\]/gm, '').replace(/<\/header>/, '<span class="word-header-triangle"></span></header>'))
                 }
 
-                document.querySelector('#translateD').innerHTML = result_2
+
+                let iconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" style="width: 44px;margin:0px 16px 0px 12px;"><defs><style>.cls-1{opacity:0.35;}.cls-2{fill:#2d2d2d;}.cls-3{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:4px;opacity:1;}</style></defs><title>资源 1</title><g id="图层_2" data-name="图层 2"><g id="图层_3" data-name="图层 3"><g class="cls-1"><circle class="cls-2" cx="22" cy="22" r="22"/></g><path class="cls-3" d="M20.56,32.14H14.84l2-19.28h5.71a7.6,7.6,0,0,1,7.68,8.57L30,23.57A9.78,9.78,0,0,1,20.56,32.14Z"/></g></g></svg>'
+
+                $('#translateD').innerHTML = result_2
                     .replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
                     .replace(/<section class="word-details-content"/gm, '<section class="word-details-content" data-active-pane=0')
-
-
-
+                    .replace(/<div class="word-notfound-inner">.+?<\/div>/gm, '<div class="word-notfound-inner">' + iconSVG + '<span>没有找到你查的单词结果</span></div>')
 
 
 
@@ -209,16 +229,17 @@
                 let stopScroll = function (event) {
                     event.preventDefault()
                 }
-                document.querySelector('#translateD').addEventListener('mouseenter', e => {
-                    document.querySelector('html').addEventListener('wheel', stopScroll, false)
+                $('#translateD').addEventListener('mouseenter', e => {
+                    $('html').addEventListener('wheel', stopScroll, false)
 
-                    document.querySelector('#translateD').addEventListener('mouseleave', e => {
-                        document.querySelector('html').removeEventListener('wheel', stopScroll, false)
+                    $('#translateD').addEventListener('mouseleave', e => {
+                        $('html').removeEventListener('wheel', stopScroll, false)
                     })
                 })
 
 
-                // 1 tag switch
+
+                // 1 切换内容tag
                 // for content tag
                 let data_point = 1
                 let wordNav = function () {
@@ -237,17 +258,17 @@
                     // display tag
                     let wordDetilShow = function () {
                         let divSelectorPath = '.word-details-pane-content > div:nth-child(' + data_point + ')'
-                        document.querySelectorAll('.word-details-pane-content > div').forEach(e => {
+                        $All('.word-details-pane-content > div').forEach(e => {
                             e.style.display = 'none'
                         })
-                        document.querySelector(divSelectorPath).style.display = 'block'
-                        document.querySelector('.word-details-pane-content').style.marginTop = '36px'
+                        $(divSelectorPath).style.display = 'block'
+                        $('.word-details-pane-content').style.marginTop = '36px'
                     }
 
                     // switch nav
                     let wordNavTagSwitch = function (type) {
-                        const nav = document.querySelector('.word-nav')
-                        const navPoint = document.querySelector('.word-nav-point')
+                        const nav = $('.word-nav')
+                        const navPoint = $('.word-nav-point')
                         const navLiNum = (nav.childNodes.length - 1) / 2
 
                         const navlength = parseInt(WIDTH / 74)
@@ -282,25 +303,25 @@
                     }
 
 
-                    document.querySelector('#word-nav').addEventListener('mouseenter', e => {
+                    $('#word-nav').addEventListener('mouseenter', e => {
                         // add Listener
-                        document.querySelector('#word-nav').addEventListener('wheel', watchWheel, false)
+                        $('#word-nav').addEventListener('wheel', watchWheel, false)
                     })
-                    document.querySelector('#word-nav').addEventListener('mouseleave', e => {
+                    $('#word-nav').addEventListener('mouseleave', e => {
                         // remove Listener
-                        document.querySelector('#word-nav').removeEventListener('wheel', watchWheel, false)
+                        $('#word-nav').removeEventListener('wheel', watchWheel, false)
                     })
                 }
-                if(document.querySelectorAll('.word-nav').length !== 0){wordNav()}
+
 
                 // 2 内容滚动
                 let wordDetail = function () {
                     // 2.content detail
-                    const wordPaneAll = document.querySelectorAll('.word-details-pane-content-all')
-                    const wordPaneContent = document.querySelectorAll('.word-details-pane-content')
-                    const wordDetailsPaneHeaderAll = document.querySelectorAll('.word-details-pane-header')
-                    const wordNavAll = document.querySelectorAll('.word-nav')
-                    const wordDetailsPaneContentAll = document.querySelectorAll('.word-details-pane-content')
+                    const wordPaneAll = $All('.word-details-pane-content-all')
+                    const wordPaneContent = $All('.word-details-pane-content')
+                    const wordDetailsPaneHeaderAll = $All('.word-details-pane-header')
+                    const wordNavAll = $All('.word-nav')
+                    const wordDetailsPaneContentAll = $All('.word-details-pane-content')
 
 
                     let translateDHeight = getElementHeight('#translateD')
@@ -309,9 +330,9 @@
 
                     let scrollContent = function () {
                         // 1 get wordNavHeight
-                        data_active_pane = document.querySelector('.word-details-content').getAttribute('data-active-pane')
+                        data_active_pane = $('.word-details-content').getAttribute('data-active-pane')
 
-                        if (document.querySelectorAll('.word-details-tab').length !== 0) {
+                        if ($All('.word-details-tab').length !== 0) {
                             wordNavHeight = getElementHeight('.word-details-tab')
                         }
 
@@ -353,7 +374,7 @@
                         })
                     }
                 }
-                wordDetail()
+
 
 
                 // 3 同反义词跳转
@@ -365,12 +386,12 @@
                             foo(event.target.childNodes[1].getAttribute('data-syn-word'), en)
                         }
                     }
-                    if (document.querySelectorAll('.syn').length !== 0) {
-                        document.querySelector('.syn').addEventListener('click', event => {
+                    if ($All('.syn').length !== 0) {
+                        $('.syn').addEventListener('click', event => {
                             aTag()
                         })
                     }
-                    let simple_definition = document.querySelectorAll('.simple-definition')
+                    let simple_definition = $All('.simple-definition')
                     if (simple_definition.length !== 0) {
                         simple_definition.forEach(e => {
                             e.addEventListener('click', event => {
@@ -379,19 +400,19 @@
                         })
                     }
                 }
-                wordSyn()
+
 
 
                 // 4 多个读音选择
                 let multiPronunciation = function () {
-                    if (document.querySelectorAll('.word-details-header').length !== 0) {
-                        let li = document.querySelectorAll('.word-details-tab')
-                        let span = document.querySelector('.word-header-triangle')
-                        let liWidth = WIDTH / document.querySelectorAll('.word-details-tab').length
+                    if ($All('.word-details-header').length !== 0) {
+                        let li = $All('.word-details-tab')
+                        let span = $('.word-header-triangle')
+                        let liWidth = WIDTH / $All('.word-details-tab').length
                         // 3 is span width/2
                         span.style.marginLeft = (liWidth / 2 - 3) + 'px'
 
-                        let contentAll = document.querySelectorAll('.word-details-pane')
+                        let contentAll = $All('.word-details-pane')
                         let data_active
                         let headerDone = function () {
                             if (event.target.tagName == 'LI') {
@@ -401,11 +422,11 @@
                                     e.style.display = 'none'
                                 })
                                 contentAll[data_active].style.display = 'block'
-                                document.querySelectorAll('.pronounces').forEach(e => {
+                                $All('.pronounces').forEach(e => {
                                     e.style.color = '#ffffff87'
                                 })
                                 event.target.childNodes[3].style.color = 'white'
-                                document.querySelector('.word-details-content').setAttribute('data-active-pane', data_active)
+                                $('.word-details-content').setAttribute('data-active-pane', data_active)
                             }
                         }
 
@@ -416,10 +437,38 @@
                         }
                     }
                 }
-                multiPronunciation()
 
-                // 5
-                document.querySelector('#translateD').style.right = '1.8vh'
+
+
+                // run function
+                if ($All('.word-notfound-inner').length !== 0) {
+                    $('#translateD').style.height = '64px'
+
+                    setTimeout(() => {
+                       $('#translateD').style.opacity = '0'
+                       setTimeout(()=>{
+                        $('#translateD').style.right = ''
+                        setTimeout(()=>{
+                            $('#translateD').style.opacity = '1'
+                        },300)
+                       },300)
+                    }, 1000);
+
+                } else {
+                    $('#translateD').style.opacity = ''
+                    $('#translateD').style.height = ''
+
+                    if ($All('.word-nav').length !== 0) {
+                        wordNav()
+                        wordDetail()
+                        wordSyn()
+                        multiPronunciation()
+                    }
+                }
+
+
+                // 6
+                $('#translateD').style.right = '1.8vh'
             }
         })
     }
