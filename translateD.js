@@ -20,7 +20,15 @@
 
     // px
     let WIDTH = 280
-    let COLOR = '#7373f3'
+    let COLOR = '#4ca856'//'#7373f3'//'#e0783e'
+    let headCOLOR = function (){
+        let s = 24
+        let r = Number(Number('0x'+COLOR.slice(1,3)).toString(10)) - s
+        let g = Number(Number('0x'+COLOR.slice(3,5)).toString(10)) - s
+        let b = Number(Number('0x'+COLOR.slice(5,7)).toString(10)) - s
+
+        return '#' + r.toString(16) + g.toString(16) + b.toString(16)
+    }
 
     let translateDCSSContent = ''
         + '#translateD a {text-decoration: none;}'
@@ -37,7 +45,7 @@
         + '#translateD dl{margin:13px 0px;}'
         + '#translateD dd{ margin-left:6px;}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
-        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.95;box-shadow:0px 0px 30px #00000047;transition:right 0.32s,opacity 0.3s;}'
+        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;transition:right 0.32s,opacity 0.3s;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {margin-top:0;position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
@@ -82,10 +90,11 @@
         + '.inflections-item-attr {padding:4px;background-color:' + COLOR + ';color:white;border-radius:4px 0px 0px 4px;}'
         + '.inflections-items a {padding:4px 8px;background-color:#f8f8f8;color:black;border-radius:0px 4px 4px 0px;}'
 
+        + '.synant-content{user-select:none;}'
         + '.simple-definition a{display:inline-block;margin-top:10px;margin-right:2px;cursor:pointer;text-decoration:none;color:white;padding:4px 8px;border:1px solid #ffffff14;border-radius:4px;background-color:#ffffff24;transition:background-color 0.2s;}'
         + '.simple-definition a:hover{background-color:#ffffff63;}'
 
-        + '.word-details-header{background-color:#5454c1;}'
+        + '.word-details-header{background-color:'+headCOLOR()+';}'
         + '.word-details-header p{margin-top:0px!important;display:none;}'
         + '.word-details-header p > span {}'
         + '.word-details-header ul{display:flex;}'
@@ -151,9 +160,9 @@
         let selectedText = window.getSelection().toString()
         if (selectedText !== '') {
 
-            foo(selectedText, en)
-            //  foo(selectedText,cj)
-            //  foo(selectedText,jc)
+            //foo(selectedText, en)
+            // foo(selectedText,cj)
+              foo(selectedText,jc)
 
         } else {
             $('#translateD').style.right = ''
@@ -458,11 +467,15 @@
                     $('#translateD').style.opacity = ''
                     $('#translateD').style.height = ''
 
-                    if ($All('.word-nav').length !== 0) {
+                    if ($All('.word-nav').length !== 0) {           
                         wordNav()
                         wordDetail()
                         wordSyn()
                         multiPronunciation()
+
+                        if($('.word-nav').children.length < 1 && $('.word-details-pane-content').children.length < 1){
+                            $('#translateD').style.height =  getElementHeight('.word-details-pane-header')+13 + 'px'
+                        }
                     }
                 }
 
