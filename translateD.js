@@ -14,18 +14,16 @@
 (function () {
     'use strict';
 
-    let en = 'https://dict.hjenglish.com/w/'
-    let cj = 'https://dict.hjenglish.com/jp/cj/'
-    let jc = 'https://dict.hjenglish.com/jp/jc/'
+
 
     // px
     let WIDTH = 280
     let COLOR = '#4ca856'//'#7373f3'//'#e0783e'
-    let headCOLOR = function (){
+    let headCOLOR = function () {
         let s = 24
-        let r = Number(Number('0x'+COLOR.slice(1,3)).toString(10)) - s
-        let g = Number(Number('0x'+COLOR.slice(3,5)).toString(10)) - s
-        let b = Number(Number('0x'+COLOR.slice(5,7)).toString(10)) - s
+        let r = Number(Number('0x' + COLOR.slice(1, 3)).toString(10)) - s
+        let g = Number(Number('0x' + COLOR.slice(3, 5)).toString(10)) - s
+        let b = Number(Number('0x' + COLOR.slice(5, 7)).toString(10)) - s
 
         return '#' + r.toString(16) + g.toString(16) + b.toString(16)
     }
@@ -94,7 +92,7 @@
         + '.simple-definition a{display:inline-block;margin-top:10px;margin-right:2px;cursor:pointer;text-decoration:none;color:white;padding:4px 8px;border:1px solid #ffffff14;border-radius:4px;background-color:#ffffff24;transition:background-color 0.2s;}'
         + '.simple-definition a:hover{background-color:#ffffff63;}'
 
-        + '.word-details-header{background-color:'+headCOLOR()+';}'
+        + '.word-details-header{background-color:' + headCOLOR() + ';}'
         + '.word-details-header p{margin-top:0px!important;display:none;}'
         + '.word-details-header p > span {}'
         + '.word-details-header ul{display:flex;}'
@@ -106,7 +104,10 @@
 
         + '.word-notfound-inner {background-color:' + COLOR + ';color:white;display: flex;height:10vh;align-items: center;}'
         + '.word-notfound-inner span{font-size: 16px;}'
-        
+
+        + '@keyframes search-bar{from{transform:scale3d(0,0,0)}to{transform:scale3d(1,1,1)}}'
+        + '#translateD-search-bar{width:22px;height:22px;z-index: 99999;position: absolute;border-radius:30px;background-color:' + COLOR + ';opacity:0.84;box-shadow:0px 0px 10px #00000047;display:none;top:0;left:0;animation-name:search-bar;animation-duration:0.32s;}'
+
 
 
 
@@ -141,38 +142,75 @@
         return document.querySelectorAll(CSSSelector)
     }
 
-
+    //'<div class="">'+searchSVG+'</div>'
 
     window.onload = () => {
         let style = document.createElement("style")
         let div = document.createElement("div")
+        let bar = document.createElement("div")
         style.id = 'translateDCSS'
         div.id = 'translateD'
+        bar.id = 'translateD-search-bar'
         $('head').appendChild(style)
         document.body.appendChild(div)
+        document.body.appendChild(bar)
+
+        let searchSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" style = "width:22px;display:fixed;"><defs><style>.cls-1,.cls-4{fill:none;}.cls-2{opacity:0.35;}.cls-31{fill:none;}.cls-4{stroke:#fff;stroke-miterlimit:10;stroke-width:2px;opacity:0.88;isolation:isolate;}</style></defs><title></title><g id="图层_2" data-name="图层 2"><g id="图层_1-2" data-name="图层 1"><g id="图层_2-2" data-name="图层 2"><g id="图层_3" data-name="图层 3"><rect class="cls-1" width="20" height="20"/><g class="cls-2"><circle class="cls-31" cx="10" cy="10" r="8"/></g><path class="cls-4" d="M9.48,13.69H7.4l.72-7H10.2A2.75,2.75,0,0,1,13,9.39a1.79,1.79,0,0,1,0,.4l-.08.78A3.56,3.56,0,0,1,9.48,13.69Z"/></g></g></g></g></svg>'
 
         style.innerHTML += translateDCSSContent
+        bar.innerHTML += searchSVG
     }
 
 
 
-    window.document.body.addEventListener('mouseup', () => {
+    let CJK = /[\u3400-\u4DB5\u2000-\u2A6F\u4E00-\u9FA5]/gm
+    let JP = /[\u3040-\u309F\u30A0-\u30FF\u31F0-\u31FF]/gm
+    let US = /[A-Za-z]/gm
+
+
+    document.body.addEventListener('mouseup', () => {
         let selectedText = window.getSelection().toString()
-        if (selectedText !== '') {
-
-            //foo(selectedText, en)
-            // foo(selectedText,cj)
-              foo(selectedText,jc)
-
-        } else {
-            $('#translateD').style.right = ''
+        let searchBar = $('#translateD-search-bar')
+        let doSearch = function () {
+            switch (true) {
+                case JP.test(selectedText) || CJK.test(selectedText)://
+                    foo(selectedText, jc)
+                    break;
+                case US.test(selectedText):
+                    foo(selectedText, en)
+                    break;
+            }
+            searchBar.removeEventListener('click', doSearch, false)
+            searchBar.style.display = ''
         }
+
+        if (selectedText !== '') {
+            searchBar.style = 'margin-top:' + (parseInt(event.pageY) + 15) + 'px;margin-left:' + (parseInt(event.pageX) + 15) + 'px'
+            searchBar.style.display = 'block'
+        }else{
+            $('#translateD').style.right = ''
+            searchBar.style.display = ''
+        }
+
+        searchBar.addEventListener('click', doSearch, false)
+
+        // foo(selectedText,cj)
 
         console.log(selectedText)
     }, false)
 
 
 
+    document.body.addEventListener('click', () => {
+        
+    })
+
+
+
+
+    let en = 'https://dict.hjenglish.com/w/'
+    let cj = 'https://dict.hjenglish.com/jp/cj/'
+    let jc = 'https://dict.hjenglish.com/jp/jc/'
 
     // DOM 操作
     function foo(word, type) {
@@ -180,6 +218,7 @@
         GM_xmlhttpRequest({
             method: "GET",
             url: url,
+            onprogress: () => { console.log('progress') },
             onload: function (response) {
                 let result_1 = '', result_2 = '', result_3 = '';
 
@@ -454,27 +493,27 @@
                     $('#translateD').style.height = '64px'
 
                     setTimeout(() => {
-                       $('#translateD').style.opacity = '0'
-                       setTimeout(()=>{
-                        $('#translateD').style.right = ''
-                        setTimeout(()=>{
-                            $('#translateD').style.opacity = '1'
-                        },300)
-                       },300)
+                        $('#translateD').style.opacity = '0'
+                        setTimeout(() => {
+                            $('#translateD').style.right = ''
+                            setTimeout(() => {
+                                $('#translateD').style.opacity = '1'
+                            }, 300)
+                        }, 300)
                     }, 1000);
 
                 } else {
                     $('#translateD').style.opacity = ''
                     $('#translateD').style.height = ''
 
-                    if ($All('.word-nav').length !== 0) {           
+                    if ($All('.word-nav').length !== 0) {
                         wordNav()
                         wordDetail()
                         wordSyn()
                         multiPronunciation()
 
-                        if($('.word-nav').children.length < 1 && $('.word-details-pane-content').children.length < 1){
-                            $('#translateD').style.height =  getElementHeight('.word-details-pane-header')+13 + 'px'
+                        if ($('.word-nav').children.length < 1 && $('.word-details-pane-content').children.length < 1) {
+                            $('#translateD').style.height = getElementHeight('.word-details-pane-header') + 13 + 'px'
                         }
                     }
                 }
