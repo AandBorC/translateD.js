@@ -291,7 +291,7 @@
                 let data_point = 1
                 let wordNav = function () {
 
-                    let watchWheel = function () {
+                    let watchWheel = function (event) {
                         // up
                         if (event.deltaY < 0) {
                             wordNavTagSwitch('up')
@@ -375,7 +375,7 @@
                     let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeightMarginTop, data_active_pane;
                     wordNavHeight = 0;// defult
 
-                    let scrollContent = function () {
+                    let scrollContent = function (event) {
                         // 1 get wordNavHeight
                         data_active_pane = $('.word-details-content').getAttribute('data-active-pane')
 
@@ -426,7 +426,7 @@
 
                 // 3 同反义词跳转
                 let wordSyn = function () {
-                    let aTag = function () {
+                    let aTag = function (event) {
                         if (event.target.tagName == 'A') {
                             foo(event.target.getAttribute('data-syn-word'), en)
                         } else if (event.target.tagName == 'TD') {
@@ -434,16 +434,12 @@
                         }
                     }
                     if ($All('.syn').length !== 0) {
-                        $('.syn').addEventListener('click', event => {
-                            aTag()
-                        })
+                        $('.syn').addEventListener('click',aTag,false)
                     }
                     let simple_definition = $All('.simple-definition')
                     if (simple_definition.length !== 0) {
                         simple_definition.forEach(e => {
-                            e.addEventListener('click', event => {
-                                aTag()
-                            })
+                            e.addEventListener('click',aTag,false)
                         })
                     }
                 }
@@ -461,7 +457,7 @@
 
                         let contentAll = $All('.word-details-pane')
                         let data_active
-                        let headerDone = function () {
+                        let headerDone = function (event) {
                             if (event.target.tagName == 'LI') {
                                 data_active = event.target.getAttribute('data-active')
                                 span.style.marginLeft = (liWidth / 2 - 3) + liWidth * data_active + 'px'
