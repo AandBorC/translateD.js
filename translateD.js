@@ -170,7 +170,7 @@
     let other = /\s.+/
 
 
-    document.body.addEventListener('mouseup', () => {
+    document.body.addEventListener('mouseup', event => {
         let selectedText = window.getSelection().toString()
         let searchBar = $('#translateD-search-bar')
         let doSearch = function () {
@@ -204,11 +204,7 @@
 
 
 
-    document.body.addEventListener('click', () => {
-        
-    })
-
-
+   
 
 
     let en = 'https://dict.hjenglish.com/w/'
