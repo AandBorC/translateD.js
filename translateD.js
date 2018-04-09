@@ -18,7 +18,7 @@
 
     // px
     let WIDTH = 280
-    let COLOR = '#4ca856'//'#7373f3'//'#e0783e'
+    let COLOR = '#e0783e'//'#4ca856'//'#7373f3'//'#e0783e'
     let headCOLOR = function () {
         let s = 24
         let r = Number(Number('0x' + COLOR.slice(1, 3)).toString(10)) - s
@@ -106,7 +106,7 @@
         + '.word-notfound-inner span{font-size: 16px;}'
 
         + '@keyframes search-bar{from{transform:scale3d(0,0,0)}to{transform:scale3d(1,1,1)}}'
-        + '#translateD-search-bar{width:22px;height:22px;z-index: 99999;position: absolute;border-radius:30px;background-color:' + COLOR + ';opacity:0.84;box-shadow:0px 0px 10px #00000047;display:none;top:0;left:0;animation-name:search-bar;animation-duration:0.32s;}'
+        + '#translateD-search-bar{width:22px;height:22px;z-index: 99999;position: absolute;border-radius:30px;background-color:' + COLOR + ';opacity:0.84;box-shadow:0px 0px 10px '+COLOR+'54;display:none;top:0;left:0;animation-name:search-bar;animation-duration:0.24s;}'
 
 
 
@@ -163,9 +163,11 @@
 
 
 
+    
     let CJK = /[\u3400-\u4DB5\u2000-\u2A6F\u4E00-\u9FA5]/gm
     let JP = /[\u3040-\u309F\u30A0-\u30FF\u31F0-\u31FF]/gm
     let US = /[A-Za-z]/gm
+    let other = /\s.+/
 
 
     document.body.addEventListener('mouseup', () => {
@@ -184,7 +186,7 @@
             searchBar.style.display = ''
         }
 
-        if (selectedText !== '') {
+        if (selectedText!=='' && window.getSelection().focusNode.tagName == undefined) {
             searchBar.style = 'margin-top:' + (parseInt(event.pageY) + 15) + 'px;margin-left:' + (parseInt(event.pageX) + 15) + 'px'
             searchBar.style.display = 'block'
         }else{
@@ -197,6 +199,7 @@
         // foo(selectedText,cj)
 
         console.log(selectedText)
+        console.log(window.getSelection().focusNode.tagName)
     }, false)
 
 
