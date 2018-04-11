@@ -18,7 +18,7 @@
 
     // px
     let WIDTH = 280
-    let COLOR = '#e0783e'//'#4ca856'//'#7373f3'//'#e0783e'
+    let COLOR = '#4ca856'//'#7373f3'//'#e0783e'
     let headCOLOR = function () {
         let s = 24
         let r = Number(Number('0x' + COLOR.slice(1, 3)).toString(10)) - s
@@ -47,10 +47,10 @@
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {margin-top:0;position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
-        + '.word-nav li {padding-left:12px;width:62px;}'
+        + '.word-nav li {margin-left:12px;width:62px;}'
         + '.word-nav a {color:black;}'
         + '.redirection {color:#ffffffd9;border-radius:4px;padding:12px;background-color:#00000014;}'
-        + '.word-details-pane-header {padding:1.8vh;background-color:' + COLOR + ';color:white;}'
+        + '.word-details-pane-header {padding:1.8vh;background-color:' + COLOR + ';color:white;max-height:50vh;overflow-y:hidden;}'
         + '#word-details-pane-content-all {overflow-y:hidden;}'
         + '.word-details-pane-content {font-size:12px;padding:12px;padding-top:6px;transition:margin-top 0.2s;}'
         + '.word-details-pane-content > div:nth-child(n+2) {display:none;}'
@@ -106,9 +106,12 @@
         + '.word-notfound-inner span{font-size: 16px;}'
 
         + '@keyframes search-bar{from{transform:scale3d(0,0,0)}to{transform:scale3d(1,1,1)}}'
-        + '#translateD-search-bar{width:22px;height:22px;z-index: 99999;position: absolute;border-radius:30px;background-color:' + COLOR + ';opacity:0.84;box-shadow:0px 0px 10px '+COLOR+'54;display:none;top:0;left:0;animation-name:search-bar;animation-duration:0.24s;}'
+        + '#translateD-search-bar{cursor:pointer;width:22px;height:22px;z-index: 99999;position: absolute;border-radius:30px;background-color:' + COLOR + ';opacity:0.84;box-shadow:0px 0px 10px ' + COLOR + '54;display:none;top:0;left:0;animation-name:search-bar;animation-duration:0.24s;}'
 
-
+        + '.simple{}'
+        + '.simple > h2{font-size: 14px!important;margin: 4px 0!important;padding: 4px;background-color: #00000014;display: inline-block;border-radius: 4px;color: #ffffffc9;}'
+        + '.simple > ul > li {margin-bottom:6px;}'
+        + '.simple > ul > li > span {display: inline-block;padding:0px 2px; background-color:#00000014;border-radius: 4px;color: #ffffffc9;margin-right: 5px;}'
 
 
     /**
@@ -163,7 +166,7 @@
 
 
 
-    
+
     let CJK = /[\u3400-\u4DB5\u2000-\u2A6F\u4E00-\u9FA5]/gm
     let JP = /[\u3040-\u309F\u30A0-\u30FF\u31F0-\u31FF]/gm
     let US = /[A-Za-z]/gm
@@ -186,10 +189,10 @@
             searchBar.style.display = ''
         }
 
-        if (selectedText!=='' && window.getSelection().focusNode.tagName == undefined) {
+        if (selectedText !== '' && window.getSelection().focusNode.tagName == undefined) {
             searchBar.style = 'margin-top:' + (parseInt(event.pageY) + 15) + 'px;margin-left:' + (parseInt(event.pageX) + 15) + 'px'
             searchBar.style.display = 'block'
-        }else{
+        } else {
             $('#translateD').style.right = ''
             searchBar.style.display = ''
         }
@@ -204,7 +207,7 @@
 
 
 
-   
+
 
 
     let en = 'https://dict.hjenglish.com/w/'
@@ -219,12 +222,13 @@
             url: url,
             onprogress: () => { console.log('progress') },
             onload: function (response) {
+                
                 let result_1 = '', result_2 = '', result_3 = '';
 
                 result_1 = response.responseText
-                    .replace(/\r\n/g, '')
-                    .replace(/\n/g, '')
-
+                    .replace(/\r\n|\n\r/gm, '')
+                    .replace(/\n/gm, '')
+                    .replace(/\r/gm, '')
                 result_2 = result_1
                     .replace(/<aside class="side">.+<\/aside>/gm, '')
                     .match(/<section class="content">.+<\/section>/gm)[0]
@@ -236,8 +240,10 @@
                     .replace(/<div class="word-details-pane-content"/gm, '<div class="word-details-pane-content" style="margin-top:36px";')
                     .replace(/(<h2>网络热点<\/h2>)|(<h2>详细释义<\/h2>)|(<h2>常用短语<\/h2>)|(<h2>英英释义<\/h2>)|(<h2>词形变化<\/h2>)|(<h2>同反义词<\/h2>)|(<h2>词义辨析<\/h2>)/gm, '')
                     .replace(/<a\shref="\/w\//gm, '<a data-syn-word="')
+                    .replace(/<img.+?src='http:\/\/dict.hjenglish.com\/images\/.+?>/gm,'')
                     .replace(/http:\/\//gm, 'https://')
                     .replace(/class="content"/g, 'class="translateD-content"')
+                    
 
                 // 多音字
                 let m = /<div class="word-details-pane-content".+?<\/footer>/gm
@@ -370,6 +376,7 @@
                     const wordNavAll = $All('.word-nav')
                     const wordDetailsPaneContentAll = $All('.word-details-pane-content')
 
+                    const simpleAll = $All('.simple')
 
                     let translateDHeight = getElementHeight('#translateD')
                     let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeightMarginTop, data_active_pane;
@@ -387,6 +394,7 @@
                         headerHeight = getElementHeight(wordDetailsPaneHeaderAll[data_active_pane], 'object')
                         wordNavHeight = getElementHeight(wordNavAll[data_active_pane], 'object')
                         wordDetailsPaneContentHeight = getElementHeight(wordDetailsPaneContentAll[data_active_pane], 'object')
+                        simpleHeight = getElementHeight(simpleAll[data_active_pane],'object')
 
                         contentHeightMarginTop = translateDHeight - headerHeight - wordNavHeight - wordDetailsPaneContentHeight
 
@@ -409,6 +417,11 @@
 
                             }
                         }
+
+                        // simple 过长
+                        if(simpleHeight > headerHeight){
+
+                        }
                     }
 
 
@@ -420,6 +433,8 @@
                             wordPaneAll[i].removeEventListener('wheel', scrollContent, false)
                         })
                     }
+
+                    
                 }
 
 
@@ -434,12 +449,12 @@
                         }
                     }
                     if ($All('.syn').length !== 0) {
-                        $('.syn').addEventListener('click',aTag,false)
+                        $('.syn').addEventListener('click', aTag, false)
                     }
                     let simple_definition = $All('.simple-definition')
                     if (simple_definition.length !== 0) {
                         simple_definition.forEach(e => {
-                            e.addEventListener('click',aTag,false)
+                            e.addEventListener('click', aTag, false)
                         })
                     }
                 }
