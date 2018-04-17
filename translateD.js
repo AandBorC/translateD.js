@@ -31,7 +31,7 @@
     let translateDCSSContent = ''
         + '#translateD a {text-decoration: none;}'
         + '#translateD h1{font-size:26px;}'
-        + '#translateD h2{font-size:19.5px;margin:10.70px 0px;}'
+        + '#translateD h2{font-size:19.5px;margin:10.70px 0px;color:white;}'
         + '#translateD h3{font-size:18px}'
         + '#translateD h4{font-size:17.29px;}'
         + '#translateD h5{font-size:10.79px;}'
@@ -40,6 +40,7 @@
         + '#translateD p{margin:13px 0px;}'
         + '#translateD h1,#translateD h2,#translateD h3,#translateD h4,#translateD h5,#translateD h6{margin-top:0;}'
         + '#translateD li{ list-style:none;}'
+        + '#translateD ul{margin: 0 0;}'
         + '#translateD dl{margin:13px 0px;}'
         + '#translateD dd{ margin-left:6px;}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
@@ -51,6 +52,7 @@
         + '.word-nav a {color:black;}'
         + '.redirection {color:#ffffffd9;border-radius:4px;padding:12px;background-color:#00000014;}'
         + '.word-details-pane-header {padding:1.8vh;background-color:' + COLOR + ';color:white;max-height:50vh;overflow-y:hidden;}'
+        + '.word-details-pane-header h2{color:white;}'
         + '#word-details-pane-content-all {overflow-y:hidden;}'
         + '.word-details-pane-content {font-size:12px;padding:12px;padding-top:6px;transition:margin-top 0.2s;}'
         + '.word-details-pane-content > div:nth-child(n+2) {display:none;}'
@@ -101,7 +103,7 @@
         + '.word-details-header ul li div.pronounces{font-weight:lighter;color: #ffffff87}'
         + '.word-details-header ul li:nth-child(1) div.pronounces{color: white}'
         + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid ' + COLOR + ';transition:margin-left 0.4s;}'
-
+        + '.pronounce-value-jp {}'
         + '.word-notfound-inner {background-color:' + COLOR + ';color:white;display: flex;height:10vh;align-items: center;}'
         + '.word-notfound-inner span{font-size: 16px;}'
 
@@ -113,6 +115,7 @@
         + '.simple > ul > li {margin-bottom:6px;}'
         + '.simple > ul > li > span {display: inline-block;padding:0px 2px; background-color:#00000014;border-radius: 4px;color: #ffffffc9;margin-right: 5px;}'
 
+        + '.word-audio {cursor:pointer;display:inline-block;background-color:red;width:10px;height:10px;}'
 
     /**
     * 返回height的int数值
@@ -144,8 +147,6 @@
     function $All(CSSSelector) {
         return document.querySelectorAll(CSSSelector)
     }
-
-    //'<div class="">'+searchSVG+'</div>'
 
     window.onload = () => {
         let style = document.createElement("style")
@@ -188,11 +189,12 @@
             searchBar.removeEventListener('click', doSearch, false)
             searchBar.style.display = ''
         }
-
-        if (selectedText !== '' && window.getSelection().focusNode.tagName == undefined) {
+       
+        
+        if ((selectedText !== '' && window.getSelection().focusNode.tagName == undefined)) {
             searchBar.style = 'margin-top:' + (parseInt(event.pageY) + 15) + 'px;margin-left:' + (parseInt(event.pageX) + 15) + 'px'
             searchBar.style.display = 'block'
-        } else {
+        } else if(!$('#translateD').contains(event.target)){
             $('#translateD').style.right = ''
             searchBar.style.display = ''
         }
@@ -201,8 +203,6 @@
 
         // foo(selectedText,cj)
 
-        console.log(selectedText)
-        console.log(window.getSelection().focusNode.tagName)
     }, false)
 
 
@@ -256,7 +256,6 @@
                     result_cache.forEach(e => {
                         result_2 = result_2.replace(/<%-wordDetailsPaneContent-%>/m, '<div class="word-details-pane-content-all">' + e + '</div>')
                     })
-
                 }
 
                 if (new RegExp(m, 'gm').test(result_2)) {
@@ -306,6 +305,7 @@
                         else if (event.deltaY > 0) {
                             wordNavTagSwitch('down')
                         }
+
                     }
 
                     // display tag
@@ -345,13 +345,11 @@
                             data_point--
                             navScroll()
                             wordDetilShow()
-
                         }
                         else if (type == 'down' && data_point < navLiNum) {
                             data_point++
                             navScroll()
                             wordDetilShow()
-
                         }
                     }
 
@@ -379,7 +377,7 @@
                     const simpleAll = $All('.simple')
 
                     let translateDHeight = getElementHeight('#translateD')
-                    let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeightMarginTop, data_active_pane;
+                    let wordTagHeight, headerHeight, wordNavHeight, wordDetailsPaneContentHeight, contentHeightMarginTop, data_active_pane,simpleHeight;
                     wordNavHeight = 0;// defult
 
                     let scrollContent = function (event) {
@@ -394,7 +392,7 @@
                         headerHeight = getElementHeight(wordDetailsPaneHeaderAll[data_active_pane], 'object')
                         wordNavHeight = getElementHeight(wordNavAll[data_active_pane], 'object')
                         wordDetailsPaneContentHeight = getElementHeight(wordDetailsPaneContentAll[data_active_pane], 'object')
-                        simpleHeight = getElementHeight(simpleAll[data_active_pane],'object')
+                        
 
                         contentHeightMarginTop = translateDHeight - headerHeight - wordNavHeight - wordDetailsPaneContentHeight
 
@@ -417,11 +415,6 @@
 
                             }
                         }
-
-                        // simple 过长
-                        if(simpleHeight > headerHeight){
-
-                        }
                     }
 
 
@@ -434,7 +427,36 @@
                         })
                     }
 
-                    
+                     // simple 过长
+                                 
+                     let simpleMarginTop;
+                     let simpleScroll = function (event){
+                        data_active_pane = $('.word-details-content').getAttribute('data-active-pane')
+                        headerHeight = getElementHeight(wordDetailsPaneHeaderAll[data_active_pane], 'object')
+                        simpleHeight = getElementHeight(simpleAll[data_active_pane],'object')         
+                         simpleMarginTop = parseInt(getComputedStyle(simpleAll[data_active_pane],null).marginTop.replace(/px/g,''))
+                         if(event.deltaY < 0){
+                             simpleMarginTop + scrollDistance < 0 ?
+                             simpleAll[data_active_pane].style.marginTop = simpleMarginTop + scrollDistance + 'px'
+                             :
+                             simpleAll[data_active_pane].style.marginTop = '0px'      
+                         }
+                         else if (event.deltaY >0){
+                             simpleMarginTop - scrollDistance > -headerHeight ?
+                             simpleAll[data_active_pane].style.marginTop = simpleMarginTop - scrollDistance + 'px'
+                             :
+                             simpleAll[data_active_pane].style.marginTop = -headerHeight + 'px'
+                         }
+                     }
+                     
+                     if(simpleHeight > headerHeight){
+                         simpleAll[data_active_pane].addEventListener('mouseenter',event =>{
+                             simpleAll[data_active_pane].addEventListener('wheel',simpleScroll,false)
+                         })
+                         simpleAll[data_active_pane].addEventListener('mouseleave',event =>{
+                             simpleAll[data_active_pane].removeEventListener('wheel',simpleScroll,false)
+                         })
+                     }
                 }
 
 
@@ -497,6 +519,10 @@
                 }
 
 
+                // 5 播放音频
+                let playWordAudio = function(){
+
+                }
 
                 // run function
                 if ($All('.word-notfound-inner').length !== 0) {
@@ -529,8 +555,9 @@
                 }
 
 
-                // 6
+                //
                 $('#translateD').style.right = '1.8vh'
+                
             }
         })
     }
