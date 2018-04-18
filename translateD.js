@@ -42,16 +42,17 @@
         + '#translateD li{ list-style:none;}'
         + '#translateD ul{margin: 0 0;}'
         + '#translateD dl{margin:13px 0px;}'
-        + '#translateD dd{ margin-left:6px;}'
+        + '#translateD dd{transition:border-color 0.3s;;margin-left:0px;margin-top: 8px;border-radius: 6px;border: 1px solid #e6e4e4;background-color: #f8f8f845;padding: 0 8px;}'
+        + '#translateD dd:hover{border-color:#c1c1c1}'
         + '#translateD dd ul{ margin-left:6px;padding-right: 6px;}'
-        + '#translateD {overflow:hidden;text-align:left;font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;transition:right 0.32s,opacity 0.3s;}'
+        + '#translateD {/*text-shadow: 0 0 0.04px #000000b8;*/overflow:hidden;text-align:left;font-family:"Microsoft YaHei",SimSun,Arial, Helvetica, sans-serif;z-index:99999;position:fixed;width:' + WIDTH + 'px;height:96vh;top:1.8vh;right:-' + (WIDTH + 20) + 'px;border-radius:5px;background-color:white;opacity:0.96;box-shadow:0px 0px 30px #00000047;transition:right 0.32s,opacity 0.3s;}'
         + '#translateD .translateD-content{padding:0;border:0;}'
         // 分类
         + '.word-nav {margin-top:0;position:absolute;font-size:14px;padding-left:1px;min-width:' + WIDTH + 'px;height:34px;align-items:center;background-color:white;display:flex;list-style:none;border-top:1px solid #efefef;border-bottom:1px solid #efefef;margin-left:0px;transition:margin-left 0.4s;}'
         + '.word-nav li {margin-left:12px;width:62px;}'
         + '.word-nav a {color:black;}'
         + '.redirection {color:#ffffffd9;border-radius:4px;padding:12px;background-color:#00000014;}'
-        + '.word-details-pane-header {padding:1.8vh;background-color:' + COLOR + ';color:white;max-height:50vh;overflow-y:hidden;}'
+        + '.word-details-pane-header {padding:1.8vh;background-color:' + COLOR + ';color:white;max-height:40vh;overflow-y:hidden;}'
         + '.word-details-pane-header h2{color:white;}'
         + '#word-details-pane-content-all {overflow-y:hidden;}'
         + '.word-details-pane-content {font-size:12px;padding:12px;padding-top:6px;transition:margin-top 0.2s;}'
@@ -65,8 +66,8 @@
         + '.wys-icon,.wjs-icon {padding:2px;background-color:' + COLOR + ';color:white;}'
         + '.detail-tags-en {display:none;}'
         + '.detail-tags-en li {padding:2px 4px;background-color:#f1f1f1;list-style:none;margin-right:4px;}'
-        + '.def-sentence-from {margin-bottom:4px;}'
-        + '.def-sentence-to {margin-top:0px;color:#8a8a8a;}'
+        + '.def-sentence-from {margin-bottom:2px!important;font-size:14px;}'
+        + '.def-sentence-to {margin-top:0px!important;color:#8a8a8a;}'
         + '.detail-groups > dl {border-bottom:1px solid #f1f1f1;}'
         + '.detail-groups > dl dt,.enen-groups >dl dt,.analyzes-title {overflow-wrap: break-word;color:' + COLOR + '; padding:2px 6px 4px 6px;font-size:16px;border-radius:4px; background-color:#f8f8f8;border:1px solid #e6e6e6;}'
         + '.detail-groups > dl dt span.detail-pron {color:#b5b5b5;}'
@@ -100,7 +101,8 @@
         + '.word-details-header ul{display:flex;}'
         + '.word-details-header ul li{width:0px;display:inherit;justify-content:center;padding:6px 0px 8px 0px;transition:width 0.2s;}'
         + '.word-details-header ul li h2{display:none;}'
-        + '.word-details-header ul li div.pronounces{font-weight:lighter;color: #ffffff87}'
+        + '.word-details-header ul li div.pronounces{font-weight:lighter;color: #ffffff87;}'
+        + '.word-info > div.pronounces{margin-bottom:10px;}'
         + '.word-details-header ul li:nth-child(1) div.pronounces{color: white}'
         + '.word-details-header span.word-header-triangle{position:absolute;width:0;height:0;margin-top:-6px;margin-left:0px;;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid ' + COLOR + ';transition:margin-left 0.4s;}'
         + '.pronounce-value-jp {}'
@@ -112,11 +114,12 @@
 
         + '.simple{}'
         + '.simple > h2{font-size: 14px!important;margin: 4px 0!important;padding: 4px;background-color: #00000014;display: inline-block;border-radius: 4px;color: #ffffffc9;}'
-        + '.simple > ul > li {margin-bottom:6px;}'
+        + '.simple > ul > li {margin-bottom:6px;font-size:14px;}'
         + '.simple > ul > li > span {display: inline-block;padding:0px 2px; background-color:#00000014;border-radius: 4px;color: #ffffffc9;margin-right: 5px;}'
 
         + '.word-audio {cursor:pointer;display:inline-block;background-color:red;width:10px;height:10px;}'
 
+        + '.no-word-nav + .word-details-pane-content-all > .word-details-pane-content {margin-top:0px}'
     /**
     * 返回height的int数值
     * @param {*} CSSSelector
@@ -190,7 +193,7 @@
             searchBar.style.display = ''
         }
        
-        
+        // 判断划词取值
         if ((selectedText !== '' && window.getSelection().focusNode.tagName == undefined)) {
             searchBar.style = 'margin-top:' + (parseInt(event.pageY) + 15) + 'px;margin-left:' + (parseInt(event.pageX) + 15) + 'px'
             searchBar.style.display = 'block'
@@ -201,6 +204,13 @@
 
         searchBar.addEventListener('click', doSearch, false)
 
+
+        // 播放音频
+        if(event.target.className === 'word-audio'){
+            console.log(event.target.children[0])
+            event.target.children[0].play()
+        }
+        
         // foo(selectedText,cj)
 
     }, false)
@@ -233,11 +243,12 @@
                     .replace(/<aside class="side">.+<\/aside>/gm, '')
                     .match(/<section class="content">.+<\/section>/gm)[0]
                     .replace(/<script type="text\/javascript">.+<\/script>/gm, '')
-                    .replace(/<div class="word-details-ads-placeholder"><\/div>/gm, '<div id="word-nav">' + result_1.match(/<ul class="word-nav">.+?<\/ul>/gm) + '<span class="word-nav-point" data-point = "1" style="margin-left:10px;"></span></div>')
+                    .replace(/<div class="word-details-ads-placeholder"><\/div>/m, '<div id="word-nav">' + result_1.match(/<ul class="word-nav">.+?<\/ul>/gm) + '<span class="word-nav-point" data-point = "1" style="margin-left:10px;"></span></div>')
                     .replace(/<ul class="word-nav">.+?<\/ul>/, '')
                     .replace(/<ul class="word-nav">/, '<ul class="word-nav" style="margin-left:0px;">')
+                    .replace(/<div class="word-details-ads-placeholder"><\/div>/gm,'<span class="no-word-nav"></span>')
                     .replace(/<div class="word-details-ads">.+?<\/div>\s.<\/div>/gm, '')
-                    .replace(/<div class="word-details-pane-content"/gm, '<div class="word-details-pane-content" style="margin-top:36px";')
+                    .replace(/<div class="word-details-pane-content"/gm, '<div class="word-details-pane-content" style="margin-top:0px";')
                     .replace(/(<h2>网络热点<\/h2>)|(<h2>详细释义<\/h2>)|(<h2>常用短语<\/h2>)|(<h2>英英释义<\/h2>)|(<h2>词形变化<\/h2>)|(<h2>同反义词<\/h2>)|(<h2>词义辨析<\/h2>)/gm, '')
                     .replace(/<a\shref="\/w\//gm, '<a data-syn-word="')
                     .replace(/<img.+?src='http:\/\/dict.hjenglish.com\/images\/.+?>/gm,'')
@@ -274,9 +285,11 @@
                     .replace(/<footer class="word-details-pane-footer">.+?<\/footer>/gm, '')
                     .replace(/<section class="word-details-content"/gm, '<section class="word-details-content" data-active-pane=0')
                     .replace(/<div class="word-notfound-inner">.+?<\/div>|<div class="word-suggestions">.+?<\/div>/gm, '<div class="word-notfound-inner">' + iconSVG + '<span>没有找到你查的单词结果</span></div>')
+                    .replace(/<span class="word-audio.+?="/gm,'<span class="word-audio"><audio src="')
+                    .replace(/[①②③④⑤⑥⑦⑧⑨⑩]/,'')
+                    // console.log(result_2)
 
-
-
+                /// 执行
                 //0 event 'wheel' can used in chrome&firefox
                 let stopScroll = function (event) {
                     event.preventDefault()
@@ -390,7 +403,7 @@
 
                         // 2
                         headerHeight = getElementHeight(wordDetailsPaneHeaderAll[data_active_pane], 'object')
-                        wordNavHeight = getElementHeight(wordNavAll[data_active_pane], 'object')
+                        wordNavHeight = 36
                         wordDetailsPaneContentHeight = getElementHeight(wordDetailsPaneContentAll[data_active_pane], 'object')
                         
 
@@ -437,15 +450,15 @@
                          simpleMarginTop = parseInt(getComputedStyle(simpleAll[data_active_pane],null).marginTop.replace(/px/g,''))
                          if(event.deltaY < 0){
                              simpleMarginTop + scrollDistance < 0 ?
-                             simpleAll[data_active_pane].style.marginTop = simpleMarginTop + scrollDistance + 'px'
+                             simpleAll[data_active_pane].style.marginTop = simpleMarginTop + scrollDistance + 'px!important'
                              :
                              simpleAll[data_active_pane].style.marginTop = '0px'      
                          }
                          else if (event.deltaY >0){
                              simpleMarginTop - scrollDistance > -headerHeight ?
-                             simpleAll[data_active_pane].style.marginTop = simpleMarginTop - scrollDistance + 'px'
+                             simpleAll[data_active_pane].style.marginTop = simpleMarginTop - scrollDistance + 'px!important'
                              :
-                             simpleAll[data_active_pane].style.marginTop = -headerHeight + 'px'
+                             simpleAll[data_active_pane].style.marginTop = -headerHeight + 'px!important'
                          }
                      }
                      
@@ -519,11 +532,8 @@
                 }
 
 
-                // 5 播放音频
-                let playWordAudio = function(){
-
-                }
-
+               
+           
                 // run function
                 if ($All('.word-notfound-inner').length !== 0) {
                     $('#translateD').style.height = '64px'
@@ -554,8 +564,7 @@
                     }
                 }
 
-
-                //
+                // 
                 $('#translateD').style.right = '1.8vh'
                 
             }
