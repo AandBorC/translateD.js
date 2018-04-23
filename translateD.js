@@ -414,10 +414,10 @@
                         if (contentHeightMarginTop < 0) {
                             wordDetailsPaneContentMarginTop = parseInt(getComputedStyle(wordDetailsPaneContentAll[data_active_pane], null).marginTop.replace(/px/, ''))
                             if (event.deltaY < 0) {
-                                wordDetailsPaneContentMarginTop + scrollDistance < 36 ?
+                                wordDetailsPaneContentMarginTop + scrollDistance < 0 ?
                                     wordDetailsPaneContentAll[data_active_pane].style.marginTop = wordDetailsPaneContentMarginTop + scrollDistance + 'px'
                                     :
-                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = '36px'
+                                    wordDetailsPaneContentAll[data_active_pane].style.marginTop = '0px'
 
                             }
                             else if (event.deltaY > 0) {
